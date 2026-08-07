@@ -10,6 +10,7 @@ Usage:
 
 import argparse
 import pickle
+import time
 import numpy as np
 from pathlib import Path
 from sklearn.ensemble import RandomForestClassifier
@@ -155,7 +156,8 @@ def main():
         name = "SVM (RBF)"
     else:
         clf = RandomForestClassifier(n_estimators=200, random_state=42,
-                                     max_depth=None, min_samples_leaf=1)
+                                     max_depth=None, min_samples_leaf=1,
+                                     n_jobs=-1)  # use all CPU cores
         name = "Random Forest"
 
     pipeline = Pipeline([
@@ -164,12 +166,20 @@ def main():
     ])
 
     # Cross-validation
-    scores = cross_val_score(pipeline, X, y, cv=5, scoring="accuracy")
+    print(f"Cross-validating {name} (5-fold, n_jobs=-1)...")
+    t0 = time.time()
+    scores = cross_val_score(pipeline, X, y, cv=5, scoring="accuracy",
+                             n_jobs=-1)  # run folds in parallel
+    t_cv = time.time() - t0
     print(f"{name} cross-validation: {scores.mean():.1%} "
-          f"(+/- {scores.std():.1%})")
+          f"(+/- {scores.std():.1%})  [{t_cv:.1f}s]")
 
     # Train final model on all data
+    print(f"Training final model on all {len(X)} samples...")
+    t0 = time.time()
     pipeline.fit(X, y)
+    t_fit = time.time() - t0
+    print(f"Training done [{t_fit:.1f}s]")
 
     # Show confusion info
     y_pred = pipeline.predict(X)
@@ -194,6 +204,7 @@ def main():
     with open(args.output, "wb") as f:
         pickle.dump(pipeline, f)
     print(f"\nModel saved to {args.output}")
+    print(f"Total time: cross-validation {t_cv:.1f}s + training {t_fit:.1f}s = {t_cv + t_fit:.1f}s")
 
 
 if __name__ == "__main__":
