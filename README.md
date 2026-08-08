@@ -36,3 +36,7 @@ Source code and labs for the Linux in Embedded Systems course at Obuda Universit
 ## Course Documentation
 
 Full course documentation: https://www.aut.uni-obuda.hu/es/
+
+## License
+
+MIT — see [LICENSE](LICENSE). The course documentation this code accompanies is CC BY 4.0 (see the courses repo).

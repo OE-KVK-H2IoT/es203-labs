@@ -22,3 +22,7 @@ apps/processes-and-ipc/atomic_sensor
 # Python artifacts
 scripts/acoustic-keystroke/*.pkl
 scripts/acoustic-keystroke/keystroke_data/
+
+# generated figures / logs (regenerate from the scripts)
+*.png
+*.log
