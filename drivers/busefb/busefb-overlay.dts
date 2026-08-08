@@ -1,0 +1,35 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "brcm,bcm2835";
+
+    fragment@0 {
+        target = <&spi0>;
+        __overlay__ {
+            status = "okay";
+
+            #address-cells = <1>;
+            #size-cells = <0>;
+
+            busefb: busefb@0 {
+                compatible = "buse,busefb";
+                reg = <0>;
+                spi-max-frequency = <3000000>;
+
+                cs-gpios = <&gpio 17 0>;
+
+                /* 144x19: 4 full panels + 16-col tail >>  tail-width = <16> */
+                /* width = <144>;  */
+				
+				/* 128x19: 4 full panels + 16-col tail */
+                width = <128>; 
+                height = <19>;
+                panels = <4>;
+                panel-width = <32>;
+                tail-width = <0>;
+            };
+        };
+    };
+};
+
